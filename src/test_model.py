@@ -66,7 +66,6 @@ def calculate_consitencies(rep_residuals, rep_gofs):
     summaries = []
     for method in ECMethod:
         consistencies: ndarray = np.array(regression_ec(list(rep_residuals), method))
-        
         summaries.append(
                 pd.DataFrame(
                     {
@@ -86,27 +85,23 @@ def calculate_consitencies(rep_residuals, rep_gofs):
                     index=[0],
                 )
         )
-        
         summary = pd.concat(summaries, axis=0, ignore_index=True)
     return summary
 
 
 def calculate_ECs():
     rep_residuals, rep_gofs, rep_actual_lab, rep_predict_y = [], [], [], []
-
     for i in range(NB_REP):
         print("-------------------------Repetition Number---------------", i)
         fold_gofs, fold_residuals, fld_act_lab, fld_pred_y = train_model.model_train(i) # training and saving model
-
         rep_residuals.append(fold_residuals)
         rep_actual_lab.append(fld_act_lab)
         rep_predict_y.append(fld_pred_y)
         rep_gofs.append(fold_gofs)
-
     final_rep_gofs = pd.concat(rep_gofs, axis=0, ignore_index=True)
-    print(np.shape(rep_residuals), np.shape(rep_actual_lab), np.shape(rep_predict_y), 
-    np.shape(np.array(rep_residuals).reshape(4,-1)))
-    rep_residuals = np.array(rep_residuals).reshape(4,-1)
+    # print(np.shape(rep_residuals), np.shape(rep_actual_lab), np.shape(rep_predict_y), 
+    # np.shape(np.array(rep_residuals).reshape(250,-1)))
+    rep_residuals = np.array(rep_residuals).reshape(250,-1)  # 50 rep * 5 folds = 250 error sets
 
     # #saving residuals
     # all_residuals_csv = pd.DataFrame(rep_residuals)
