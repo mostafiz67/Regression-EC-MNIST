@@ -13,7 +13,7 @@ from numpy import ndarray
 from torch.utils.data import DataLoader
 
 from src import data_preprocess, my_model, train_model
-from src.constants import CHECKPOINT, NB_REP, OUT
+from src.constants import CHECKPOINT, NB_REP, OUT, K_Fold
 
 ECMethod = ["ratio", "ratio-diff", "ratio-signed", "ratio-diff-signed", "intersection_union_sample", "intersection_union_all"]
 
@@ -39,12 +39,12 @@ def regression_ec(residuals: List[ndarray], method: ECMethod) -> List[ndarray]:
         elif method == "ratio-diff":
             consistency = (np.abs(np.abs(r1) - np.abs(r2))) / (np.abs(r1) + np.abs(r2))
             consistency[np.isnan(consistency)] = 0
-        elif method =="intersection_union_sample":
+        elif method =="intersection_union_voxel":
             conditions = [(r1>=0)&(r2>=0), (r1<=0)&(r2<=0)]
             choice_numerator = [np.minimum(r1, r2), np.zeros(len(r1))]
             choice_denominator = [np.maximum(r1, r2), -np.add(r1,r2)]
             numerator = np.select(conditions, choice_numerator)
-            denominator = np.select(conditions, choice_denominator)
+            denominator = np.select(conditions, choice_denominator, np.add(np.abs(r1), np.abs(r2)))
             consistency = np.divide(numerator, denominator)
             consistency[np.isnan(consistency)] = 1
         elif method =="intersection_union_all":
@@ -52,7 +52,7 @@ def regression_ec(residuals: List[ndarray], method: ECMethod) -> List[ndarray]:
             choice_numerator = [np.minimum(r1, r2), np.zeros(len(r1))]
             choice_denominator = [np.maximum(r1, r2), -np.add(r1,r2)]
             numerator = np.select(conditions, choice_numerator)
-            denominator = np.select(conditions, choice_denominator)
+            denominator = np.select(conditions, choice_denominator, np.add(np.abs(r1), np.abs(r2)))
             consistency = np.divide(np.sum(numerator), np.sum(denominator)) # all sum and then divide
             consistency = np.nan_to_num(consistency, copy=True, nan=1.0)
         else:
@@ -101,7 +101,7 @@ def calculate_ECs():
     final_rep_gofs = pd.concat(rep_gofs, axis=0, ignore_index=True)
     # print(np.shape(rep_residuals), np.shape(rep_actual_lab), np.shape(rep_predict_y), 
     # np.shape(np.array(rep_residuals).reshape(250,-1)))
-    rep_residuals = np.array(rep_residuals).reshape(250,-1)  # 50 rep * 5 folds = 250 error sets
+    rep_residuals = np.array(rep_residuals).reshape(NB_REP*K_Fold,-1)  # rep*folds
 
     # #saving residuals
     # all_residuals_csv = pd.DataFrame(rep_residuals)

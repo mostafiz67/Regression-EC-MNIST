@@ -30,6 +30,6 @@ LR = 0.01
 NB_EPOCS = 50
 K_Fold = 5
 BATCH_SIZE = 256
-NB_REP = 50
+NB_REP = 25
 
 CHOICES = ['Train-Test', 'Compare']
