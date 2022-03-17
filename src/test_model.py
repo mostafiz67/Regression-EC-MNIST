@@ -24,7 +24,6 @@ def regression_ec(residuals: List[ndarray], method: ECMethod) -> List[ndarray]:
     consistencies = []
     for pair in combinations(residuals, 2):
         r1, r2 = pair
-        print(r1, r2)
         r = np.vstack(pair)
         sign = np.sign(np.array(r1) * np.array(r2))
         if method == "ratio-signed":
@@ -39,7 +38,7 @@ def regression_ec(residuals: List[ndarray], method: ECMethod) -> List[ndarray]:
         elif method == "ratio-diff":
             consistency = (np.abs(np.abs(r1) - np.abs(r2))) / (np.abs(r1) + np.abs(r2))
             consistency[np.isnan(consistency)] = 0
-        elif method =="intersection_union_voxel":
+        elif method =="intersection_union_sample":
             conditions = [(r1>=0)&(r2>=0), (r1<=0)&(r2<=0)]
             choice_numerator = [np.minimum(r1, r2), np.zeros(len(r1))]
             choice_denominator = [np.maximum(r1, r2), -np.add(r1,r2)]
@@ -130,20 +129,23 @@ def calculate_ECs():
 
 
 def preds_actual_compare():
-    model = my_model.get_model() #Loading Model
-    model.load_state_dict(torch.load(os.path.join(CHECKPOINT, "baseline_1_4.h5")))
-    _, test_dataloader = data_preprocess.data_loaders() #loading data
-    data_loader = test_dataloader = DataLoader(test_dataloader, batch_size=10000)
-    sample = next(iter(data_loader))
-    imgs, lbls = sample
-    actual_number = lbls[:10].detach().numpy()
+    for rep in range(0, NB_REP):
+        for fold_num in range(0,K_Fold):
+            model = my_model.get_model() #Loading Model
+            model_filename = "baseline_" + str(rep) + "_" + str(fold_num) + ".h5"
+            model.load_state_dict(torch.load(os.path.join(CHECKPOINT, model_filename)))
+            _, test_dataloader = data_preprocess.data_loaders() #loading data
+            data_loader = test_dataloader = DataLoader(test_dataloader, batch_size=10000)
+            sample = next(iter(data_loader))
+            imgs, lbls = sample
+            actual_number = lbls[:10].detach().numpy()
 
-    test_output, _ = model(imgs[:10])
-    # print(test_output)
-    preds_test = test_output.squeeze().detach().numpy()
-    # print(np.shape(preds_test), np.shape(actual_number))
-    print(f'Prediction Number: {preds_test}')
-    print(f'Actual Number {actual_number}')
+            test_output, _ = model(imgs[:10])
+            # print(test_output)
+            preds_test = test_output.squeeze().detach().numpy()
+            # print(np.shape(preds_test), np.shape(actual_number))
+            print(f'Prediction Number for Rep: {rep} and K_Fold {fold_num}: {preds_test}')
+            print(f'Actual Number  for Rep: {rep} and K_Fold {fold_num}: {actual_number}')
 
 if __name__ == "__main__":
     calculate_ECs()
