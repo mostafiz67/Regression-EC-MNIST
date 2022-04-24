@@ -15,7 +15,8 @@ from torch.utils.data import DataLoader
 from src import data_preprocess, my_model, train_model
 from src.constants import CHECKPOINT, NB_REP, OUT, K_Fold
 
-ECMethod = ["ratio", "ratio-diff", "ratio-signed", "ratio-diff-signed", "intersection_union_sample", "intersection_union_all"]
+ECMethod = ["ratio", "ratio-diff", "ratio-signed", "ratio-diff-signed", 
+            "intersection_union_sample", "intersection_union_all", "intersection_union_distance"]
 
 
 
@@ -54,6 +55,10 @@ def regression_ec(residuals: List[ndarray], method: ECMethod) -> List[ndarray]:
             denominator = np.select(conditions, choice_denominator, np.add(np.abs(r1), np.abs(r2)))
             consistency = np.divide(np.sum(numerator), np.sum(denominator)) # all sum and then divide
             consistency = np.nan_to_num(consistency, copy=True, nan=1.0)
+        elif method =="intersection_union_distance":
+            conditions = [(r1>=0)&(r2>=0), (r1<=0)&(r2<=0)]
+            choiceValue = [np.abs(np.subtract(np.abs(r1), np.abs(r2))), np.add(np.abs(r1), np.abs(r2))]
+            consistency = np.select(conditions, choiceValue, np.add(np.abs(r1), np.abs(r2)))
         else:
             raise ValueError("Invalid method")
         consistencies.append(consistency)
