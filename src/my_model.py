@@ -1,6 +1,7 @@
 """
 Author: Md Mostafizur Rahman
 File: CNN design for the MNIST dataset 
+Some code for the model is inherited from https://medium.com/@nutanbhogendrasharma/pytorch-convolutional-neural-network-with-mnist-dataset-4e8a4265e118
 
 """
 

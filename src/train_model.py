@@ -1,6 +1,7 @@
 """
 Author: Md Mostafziur Rahman
 File: Traning a CNN architecture using the MNIST dataset
+Some code is inherited from https://github.com/christianversloot/machine-learning-articles/blob/main/how-to-use-k-fold-cross-validation-with-pytorch.md
 """
 
 import os
