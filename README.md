@@ -7,10 +7,11 @@ We used MNIST digits dataset to calculate the regression ECs.
 1) Two fully convolutional layers, 
 2) Relu activation function and MaxPooling,
 3) Mean Squared Error (MSELoss) as loss function, 
-4) Stochastic Gradient Descent (SGD) as optimizer,
-5) Learning Rate 0.01
-6) Number of Epochs 50
-7) K-fold (k=5) external holdout cross-validation
+4) Stochastic Gradient Descent (SGD),
+5) Learning Rate 0.01,
+6) Number of Epochs 50,
+7) K-fold (k=5) external holdout cross-validation, and
+8) Number of repeat is 15.
 
 
 ## Regression ECs and Goodness of fit for the MNIST Digits using CNN
@@ -24,7 +25,7 @@ CNN | Ratio: 0.48 (0.02) <br /> Ratio-diff: 0.40 (0.02) <br /> Ratio-signed: 0.2
 
 Actual| 7| 2| 1| 0| 4| 1| 4| 9| 5| 9|
 -----------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-Prediction| 7.0|  2.0| 1.0| 0.4| 4.4| 0.7| 4.2| 7.5| 6.4| 9.2 
+Prediction| 7.0|  2.1| 1.0| 0.4| 4.5| 0.7| 4.2| 7.5| 6.4| 9.2 
 
 
 
