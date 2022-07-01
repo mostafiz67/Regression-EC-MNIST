@@ -55,7 +55,8 @@ def model_test(test_dataloader, model):
             test_output, _ = model(images)
             actual_labels = labels.detach().numpy()
             pred_y = test_output.squeeze().detach().numpy()
-            residuals =  actual_labels - pred_y
+            # residuals =  actual_labels - pred_y
+            residuals =  pred_y - actual_labels
             rep_gof = pd.DataFrame()
             rep_gof["Test_MSqE"] = [mean_squared_error(actual_labels, pred_y)]
             rep_gof["Test_MAE"] = [mean_absolute_error(actual_labels, pred_y)]
