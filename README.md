@@ -1,6 +1,6 @@
 #                           MNIST Digits Regression EC with K-fold validation
 
-The MNIST digits dataset was used to calculate the regression ECs with some Goodness-of-Fit test score. We desige and developed a Convolutional Neural Network (CNN) model for this problem.
+The MNIST digits dataset was used to calculate the regression ECs with some Goodness-of-Fit test scores. We desige and developed a Convolutional Neural Network (CNN) model for this problem.
 
 ## CNN Model Description
 
